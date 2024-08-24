@@ -49,6 +49,7 @@ public class StatsFragment extends Fragment {
 
         FragmentStatsBinding binding;
         Calendar calendar;
+        Calendar dailyCalendar;
     /*
     0 = Daily
     1 = Monthly
@@ -63,7 +64,7 @@ public class StatsFragment extends Fragment {
             binding = FragmentStatsBinding.inflate(inflater);
 
             viewModel = new ViewModelProvider(requireActivity()).get(MainViewModel.class);
-
+            dailyCalendar = Calendar.getInstance();
             calendar = Calendar.getInstance();
             updateDate();
 
@@ -89,6 +90,7 @@ public class StatsFragment extends Fragment {
 
             binding.nextDate.setOnClickListener(c-> {
                 if(Constants.SELECTED_TAB_STATS == Constants.DAILY) {
+                    dailyCalendar.add(Calendar.DATE, 1);
                     calendar.add(Calendar.DATE, 1);
                 } else if(Constants.SELECTED_TAB_STATS == Constants.MONTHLY) {
                     calendar.add(Calendar.MONTH, 1);
@@ -98,6 +100,7 @@ public class StatsFragment extends Fragment {
 
             binding.prevDate.setOnClickListener(c-> {
                 if(Constants.SELECTED_TAB_STATS == Constants.DAILY) {
+                    dailyCalendar.add(Calendar.DATE, -1);
                     calendar.add(Calendar.DATE, -1);
                 } else if(Constants.SELECTED_TAB_STATS == Constants.MONTHLY) {
                     calendar.add(Calendar.MONTH, -1);
@@ -173,24 +176,11 @@ public class StatsFragment extends Fragment {
                 }
             });
 
-            viewModel.getTransactions(calendar, SELECTED_STATS_TYPE);
+            viewModel.getTransactions(calendar, SELECTED_STATS_TYPE, dailyCalendar);
 
 
 
-//
-//        pie.title("Fruits imported in 2015 (in kg)");
-//
-//        pie.labels().position("outside");
-//
-//        pie.legend().title().enabled(true);
-//        pie.legend().title()
-//                .text("Retail channels")
-//                .padding(0d, 0d, 10d, 0d);
-//
-//        pie.legend()
-//                .position("center-bottom")
-//                .itemsLayout(LegendLayout.HORIZONTAL)
-//                .align(Align.CENTER);
+
 
             binding.anyChart.setChart(pie);
 
@@ -200,10 +190,12 @@ public class StatsFragment extends Fragment {
 
         void updateDate() {
             if(Constants.SELECTED_TAB_STATS == Constants.DAILY) {
-                binding.currentDate.setText(Helper.formatDate(calendar.getTime()));
+
+                binding.currentDate.setText(Helper.formatDate(dailyCalendar.getTime()));
+
             } else if(Constants.SELECTED_TAB_STATS == Constants.MONTHLY) {
                 binding.currentDate.setText(Helper.formatDateByMonth(calendar.getTime()));
             }
-            viewModel.getTransactions(calendar, SELECTED_STATS_TYPE);
+            viewModel.getTransactions(calendar, SELECTED_STATS_TYPE, dailyCalendar);
         }
     }

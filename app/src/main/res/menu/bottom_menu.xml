@@ -9,8 +9,4 @@
         android:id="@+id/Stats"
         android:icon="@drawable/graph"
         android:title="Stats" />
-    <item
-        android:id="@+id/Accounts"
-        android:icon="@drawable/coins"
-        android:title="Accounts" />
 </menu>

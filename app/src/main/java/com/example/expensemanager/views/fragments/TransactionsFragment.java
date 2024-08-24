@@ -56,6 +56,7 @@ public class TransactionsFragment extends Fragment {
 
 
     Calendar calendar;
+    Calendar dailyCalendar;
 
     public MainViewModel viewModel;
 
@@ -68,12 +69,14 @@ public class TransactionsFragment extends Fragment {
         binding = FragmentTransactionsBinding.inflate(inflater);
 
         viewModel = new ViewModelProvider(requireActivity()).get(MainViewModel.class);
+        dailyCalendar = Calendar.getInstance();
         calendar = Calendar.getInstance();
         updateDate();
 
         binding.nextDate.setOnClickListener(c-> {
 
             if (Constants.SELECTED_TAB == 0) {
+                dailyCalendar.add(Calendar.DATE, 1);
                 calendar.add(Calendar.DATE, 1);
             }
             else if (Constants.SELECTED_TAB == 1) {
@@ -86,6 +89,7 @@ public class TransactionsFragment extends Fragment {
 
         binding.prevDate.setOnClickListener(c-> {
             if (Constants.SELECTED_TAB == 0) {
+                dailyCalendar.add(Calendar.DATE, -1);
                 calendar.add(Calendar.DATE, -1);
             }
             else if (Constants.SELECTED_TAB == 1) {
@@ -167,19 +171,20 @@ public class TransactionsFragment extends Fragment {
 
 
 
-        viewModel.getTransactions(calendar);
+        viewModel.getTransactions(calendar, dailyCalendar);
         return binding.getRoot();
 
     }
 
     void updateDate() {
         if (Constants.SELECTED_TAB == Constants.DAILY) {
-            binding.currentDate.setText(Helper.formatDate(calendar.getTime()));
+
+            binding.currentDate.setText(Helper.formatDate(dailyCalendar.getTime()));
 
         } else if (Constants.SELECTED_TAB == Constants.MONTHLY) {
             binding.currentDate.setText(Helper.formatDateByMonth(calendar.getTime()));
         }
 
-        viewModel.getTransactions(calendar);
+        viewModel.getTransactions(calendar, dailyCalendar);
     }
 }

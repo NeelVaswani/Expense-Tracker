@@ -11,7 +11,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.expensemanager.R;
-import com.example.expensemanager.databinding.DeleteAlertBinding;
+
 import com.example.expensemanager.databinding.RowTransactionsBinding;
 import com.example.expensemanager.models.Category;
 import com.example.expensemanager.models.Transaction;
@@ -29,7 +29,7 @@ public class TransactionsAdapter extends RecyclerView.Adapter<TransactionsAdapte
     Context context;
     RealmResults<Transaction> transactions;
 
-    DeleteAlertBinding binding;
+
 
     public TransactionsAdapter(Context context, RealmResults<Transaction> transactions){
             this.context = context;
