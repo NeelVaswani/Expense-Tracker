@@ -12,6 +12,7 @@ public class Constants {
 
     public static int DAILY = 0;
     public static int MONTHLY = 1;
+    public static int FILTER = 2;
 
 
     public static int SELECTED_TAB = 0;

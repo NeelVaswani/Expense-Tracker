@@ -1,6 +1,8 @@
 package com.example.expensemanager.views.activities;
 
 
+import static com.example.expensemanager.utils.Constants.SELECTED_STATS_TYPE;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -13,6 +15,7 @@ import android.view.MenuItem;
 
 
 import com.example.expensemanager.utils.Constants;
+import com.example.expensemanager.utils.Helper;
 import com.example.expensemanager.viemodels.MainViewModel;
 import com.example.expensemanager.R;
 import com.example.expensemanager.databinding.ActivityMainBinding;
@@ -96,7 +99,10 @@ public class MainActivity extends AppCompatActivity {
 
                 if (item.getItemId() == R.id.Transactions) {
                     getSupportFragmentManager().popBackStack();
+                    Constants.SELECTED_ACCOUNT = "All";
                     getSupportActionBar().setTitle("Transactions");
+                    getTransactions();
+
 
                 } else if (item.getItemId() == R.id.Stats) {
                     transaction.replace(R.id.content, new StatsFragment());
@@ -111,7 +117,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void getTransactions() {
-        viewModel.getTransactions(calendar, dailyCalendar);
+        viewModel.getTransactions(calendar, dailyCalendar, viewModel.startDate, viewModel.endDate);
     }
 
 

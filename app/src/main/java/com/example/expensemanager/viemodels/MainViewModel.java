@@ -20,6 +20,8 @@ public class MainViewModel extends AndroidViewModel {
     static Realm realm;
     Calendar calendar;
     Calendar dailyCalendar;
+    public Date startDate;
+    public Date endDate;
 
 
     public MutableLiveData<RealmResults<Transaction>> transactions = new MutableLiveData<>();
@@ -44,7 +46,7 @@ public class MainViewModel extends AndroidViewModel {
 
     }
 
-    public void getTransactions(Calendar calendar, Calendar dailyCalendar) {
+    public void getTransactions(Calendar calendar, Calendar dailyCalendar, Date startDate, Date endDate) {
         this.dailyCalendar = dailyCalendar;
         dailyCalendar.set(Calendar.HOUR_OF_DAY, 0);
         dailyCalendar.set(Calendar.MINUTE, 0);
@@ -191,6 +193,68 @@ public class MainViewModel extends AndroidViewModel {
             transactions.setValue(newTransactions);
 
 
+        }else if (Constants.SELECTED_TAB == Constants.FILTER)
+        {
+
+            if (Constants.SELECTED_ACCOUNT.equals("All"))
+            {
+                newTransactions = realm.where(Transaction.class)
+                        .greaterThanOrEqualTo("date", startDate)
+                        .lessThan("date", endDate)
+                        .findAll();
+
+                income = realm.where(Transaction.class)
+                        .greaterThanOrEqualTo("date", startDate)
+                        .lessThan("date", endDate)
+                        .equalTo("type", Constants.INCOME)
+                        .sum("amount")
+                        .doubleValue();
+                expense = realm.where(Transaction.class)
+                        .greaterThanOrEqualTo("date", startDate)
+                        .lessThan("date", endDate)
+                        .equalTo("type", Constants.EXPENSE)
+                        .sum("amount")
+                        .doubleValue();
+
+                total = realm.where(Transaction.class)
+                        .greaterThanOrEqualTo("date", startDate)
+                        .lessThan("date", endDate)
+                        .sum("amount")
+                        .doubleValue();
+
+
+            }
+            else
+            {
+                newTransactions = realm.where(Transaction.class)
+                        .greaterThanOrEqualTo("date", startDate)
+                        .lessThan("date", endDate)
+                        .equalTo("account", Constants.SELECTED_ACCOUNT)
+                        .findAll();
+
+                income = realm.where(Transaction.class)
+                        .greaterThanOrEqualTo("date", startDate)
+                        .lessThan("date", endDate)
+                        .equalTo("account", Constants.SELECTED_ACCOUNT)
+                        .equalTo("type", Constants.INCOME)
+                        .sum("amount")
+                        .doubleValue();
+                expense = realm.where(Transaction.class)
+                        .greaterThanOrEqualTo("date", startDate)
+                        .lessThan("date", endDate)
+                        .equalTo("account", Constants.SELECTED_ACCOUNT)
+                        .equalTo("type", Constants.EXPENSE)
+                        .sum("amount")
+                        .doubleValue();
+
+                total = realm.where(Transaction.class)
+                        .greaterThanOrEqualTo("date", startDate)
+                        .lessThan("date", endDate)
+                        .equalTo("account", Constants.SELECTED_ACCOUNT)
+                        .sum("amount")
+                        .doubleValue();
+            }
+            transactions.setValue(newTransactions);
         }
         totalAmount.setValue(total);
         totalIncome.setValue(income);
@@ -199,7 +263,7 @@ public class MainViewModel extends AndroidViewModel {
 
     }
 
-    public void getTransactions(Calendar calendar, String type, Calendar dailyCalendar) {
+    public void getTransactions(Calendar calendar, String type, Calendar dailyCalendar, Date startDate, Date endDate) {
         this.dailyCalendar = dailyCalendar;
         dailyCalendar.set(Calendar.HOUR_OF_DAY, 0);
         dailyCalendar.set(Calendar.MINUTE, 0);
@@ -237,6 +301,13 @@ public class MainViewModel extends AndroidViewModel {
                     .lessThan("date", endTime)
                     .equalTo("type", type)
                     .findAll();
+        } else if (Constants.SELECTED_TAB_STATS == Constants.FILTER)
+        {
+            newTransactions = realm.where(Transaction.class)
+                    .greaterThanOrEqualTo("date", startDate)
+                    .lessThan("date", endDate)
+                    .equalTo("type", type)
+                    .findAll();
         }
 
 
@@ -248,7 +319,7 @@ public class MainViewModel extends AndroidViewModel {
         realm.beginTransaction();
         transaction.deleteFromRealm();
         realm.commitTransaction();
-        getTransactions(calendar, dailyCalendar);
+        getTransactions(calendar, dailyCalendar, calendar.getTime(), calendar.getTime());
     }
 
     public static void addTransaction(Transaction transaction) {

@@ -1,5 +1,9 @@
 package com.example.expensemanager.views.fragments;
 
+import android.app.AlertDialog;
+import android.app.DatePickerDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -14,6 +18,7 @@ import android.view.ViewGroup;
 import com.example.expensemanager.R;
 import com.example.expensemanager.adapters.TransactionsAdapter;
 import com.example.expensemanager.databinding.ActivityMainBinding;
+import com.example.expensemanager.databinding.DialogFilterBinding;
 import com.example.expensemanager.databinding.FragmentTransactionsBinding;
 import com.example.expensemanager.databinding.RowTransactionsBinding;
 import com.example.expensemanager.models.Transaction;
@@ -23,7 +28,9 @@ import com.example.expensemanager.viemodels.MainViewModel;
 import com.example.expensemanager.views.activities.MainActivity;
 import com.google.android.material.tabs.TabLayout;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
@@ -56,6 +63,7 @@ public class TransactionsFragment extends Fragment {
 
 
     Calendar calendar;
+
     Calendar dailyCalendar;
 
     public MainViewModel viewModel;
@@ -66,11 +74,13 @@ public class TransactionsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
+
         binding = FragmentTransactionsBinding.inflate(inflater);
 
         viewModel = new ViewModelProvider(requireActivity()).get(MainViewModel.class);
         dailyCalendar = Calendar.getInstance();
         calendar = Calendar.getInstance();
+
         updateDate();
 
         binding.nextDate.setOnClickListener(c-> {
@@ -115,6 +125,72 @@ public class TransactionsFragment extends Fragment {
 
                 } else if (tab.getText().equals("Daily")) {
                     Constants.SELECTED_TAB= 0;
+                    updateDate();
+
+                }else if (tab.getText().equals("Filter")) {
+
+                    Constants.SELECTED_TAB= 2;
+                    DialogFilterBinding binding = DialogFilterBinding.inflate(getLayoutInflater());
+
+                    AlertDialog filterDialog = new AlertDialog.Builder(getContext()).create();
+                    filterDialog.setTitle("Set Filter");
+                    filterDialog.setView(binding.getRoot());
+
+                    binding.startDate.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            DatePickerDialog datePickerDialog = new DatePickerDialog(getContext());
+                            datePickerDialog.setOnDateSetListener((datePicker, i, i1, i2) -> {
+
+                                Calendar calendar = Calendar.getInstance();
+                                calendar.set(Calendar.DAY_OF_MONTH, datePicker.getDayOfMonth());
+                                calendar.set(Calendar.MONTH, datePicker.getMonth());
+                                calendar.set(Calendar.YEAR, datePicker.getYear());
+
+                                SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMMM, yyyy");
+                                String dateToShow = dateFormat.format(calendar.getTime());
+
+                                binding.startDate.setText(dateToShow);
+                                viewModel.startDate = calendar.getTime();
+
+                            });
+                            datePickerDialog.show();
+                        }
+                    });
+                    binding.endDate.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            DatePickerDialog datePickerDialog = new DatePickerDialog(getContext());
+                            datePickerDialog.setOnDateSetListener((datePicker, i, i1, i2) -> {
+
+                                Calendar calendar = Calendar.getInstance();
+                                calendar.set(Calendar.DAY_OF_MONTH, datePicker.getDayOfMonth());
+                                calendar.set(Calendar.MONTH, datePicker.getMonth());
+                                calendar.set(Calendar.YEAR, datePicker.getYear());
+
+                                SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMMM, yyyy");
+                                String dateToShow = dateFormat.format(calendar.getTime());
+
+                                binding.endDate.setText(dateToShow);
+                                viewModel.endDate = calendar.getTime();
+
+                            });
+                            datePickerDialog.show();
+                        }
+                    });
+
+
+
+                    filterDialog.setButton(DialogInterface.BUTTON_POSITIVE, "Save", (dialogInterface, i) -> {
+                        viewModel.getTransactions(calendar, dailyCalendar, viewModel.startDate, viewModel.endDate);
+                        filterDialog.dismiss();
+                    });
+                    filterDialog.setButton(DialogInterface.BUTTON_NEGATIVE, "Cancel", (dialogInterface, i) -> {
+                        filterDialog.dismiss();
+                    });
+
+                    filterDialog.show();
+
                     updateDate();
 
                 }
@@ -171,7 +247,7 @@ public class TransactionsFragment extends Fragment {
 
 
 
-        viewModel.getTransactions(calendar, dailyCalendar);
+        viewModel.getTransactions(calendar, dailyCalendar, viewModel.startDate, viewModel.endDate);
         return binding.getRoot();
 
     }
@@ -183,8 +259,10 @@ public class TransactionsFragment extends Fragment {
 
         } else if (Constants.SELECTED_TAB == Constants.MONTHLY) {
             binding.currentDate.setText(Helper.formatDateByMonth(calendar.getTime()));
+        }else if(Constants.SELECTED_TAB == Constants.FILTER) {
+            binding.currentDate.setText("Filter Results");
         }
 
-        viewModel.getTransactions(calendar, dailyCalendar);
+        viewModel.getTransactions(calendar, dailyCalendar, viewModel.startDate, viewModel.endDate);
     }
 }
