@@ -200,25 +200,25 @@ public class MainViewModel extends AndroidViewModel {
             {
                 newTransactions = realm.where(Transaction.class)
                         .greaterThanOrEqualTo("date", startDate)
-                        .lessThan("date", endDate)
+                        .lessThanOrEqualTo("date", endDate)
                         .findAll();
 
                 income = realm.where(Transaction.class)
                         .greaterThanOrEqualTo("date", startDate)
-                        .lessThan("date", endDate)
+                        .lessThanOrEqualTo("date", endDate)
                         .equalTo("type", Constants.INCOME)
                         .sum("amount")
                         .doubleValue();
                 expense = realm.where(Transaction.class)
                         .greaterThanOrEqualTo("date", startDate)
-                        .lessThan("date", endDate)
+                        .lessThanOrEqualTo("date", endDate)
                         .equalTo("type", Constants.EXPENSE)
                         .sum("amount")
                         .doubleValue();
 
                 total = realm.where(Transaction.class)
                         .greaterThanOrEqualTo("date", startDate)
-                        .lessThan("date", endDate)
+                        .lessThanOrEqualTo("date", endDate)
                         .sum("amount")
                         .doubleValue();
 
@@ -228,20 +228,20 @@ public class MainViewModel extends AndroidViewModel {
             {
                 newTransactions = realm.where(Transaction.class)
                         .greaterThanOrEqualTo("date", startDate)
-                        .lessThan("date", endDate)
+                        .lessThanOrEqualTo("date", endDate)
                         .equalTo("account", Constants.SELECTED_ACCOUNT)
                         .findAll();
 
                 income = realm.where(Transaction.class)
                         .greaterThanOrEqualTo("date", startDate)
-                        .lessThan("date", endDate)
+                        .lessThanOrEqualTo("date", endDate)
                         .equalTo("account", Constants.SELECTED_ACCOUNT)
                         .equalTo("type", Constants.INCOME)
                         .sum("amount")
                         .doubleValue();
                 expense = realm.where(Transaction.class)
                         .greaterThanOrEqualTo("date", startDate)
-                        .lessThan("date", endDate)
+                        .lessThanOrEqualTo("date", endDate)
                         .equalTo("account", Constants.SELECTED_ACCOUNT)
                         .equalTo("type", Constants.EXPENSE)
                         .sum("amount")
@@ -249,7 +249,7 @@ public class MainViewModel extends AndroidViewModel {
 
                 total = realm.where(Transaction.class)
                         .greaterThanOrEqualTo("date", startDate)
-                        .lessThan("date", endDate)
+                        .lessThanOrEqualTo("date", endDate)
                         .equalTo("account", Constants.SELECTED_ACCOUNT)
                         .sum("amount")
                         .doubleValue();
@@ -304,8 +304,8 @@ public class MainViewModel extends AndroidViewModel {
         } else if (Constants.SELECTED_TAB_STATS == Constants.FILTER)
         {
             newTransactions = realm.where(Transaction.class)
-                    .greaterThanOrEqualTo("date", startDate)
-                    .lessThan("date", endDate)
+                    .greaterThan("date", startDate)
+                    .lessThanOrEqualTo("date", endDate)
                     .equalTo("type", type)
                     .findAll();
         }
@@ -329,16 +329,5 @@ public class MainViewModel extends AndroidViewModel {
 
     }
 
-    public static void addTransaction() {
-        realm.beginTransaction();
-
-
-        realm.copyToRealmOrUpdate(new Transaction(Constants.INCOME, "Investment", "Cash", "Some note here", new Date(), 500, new Date().getTime()));
-        realm.copyToRealmOrUpdate(new Transaction(Constants.EXPENSE, "Other", "Bank", "Some note here", new Date(), -900, new Date().getTime()));
-        realm.copyToRealmOrUpdate(new Transaction(Constants.EXPENSE, "Rent", "Other", "Some note here", new Date(), -500, new Date().getTime()));
-        realm.copyToRealmOrUpdate(new Transaction(Constants.INCOME, "Business", "Card", "Some note here", new Date(), 500, new Date().getTime()));
-
-        realm.commitTransaction();
-    }
 
 }

@@ -214,9 +214,14 @@ public class TransactionsFragment extends Fragment {
         viewModel.transactions.observe(getViewLifecycleOwner(), new Observer<RealmResults<Transaction>>() {
             @Override
             public void onChanged(RealmResults<Transaction> transactions) {
-                TransactionsAdapter transactionsAdapter = new TransactionsAdapter(getContext()  , transactions);
-
+                TransactionsAdapter transactionsAdapter = new TransactionsAdapter(getActivity()  , transactions);
                 binding.transactionsList.setAdapter(transactionsAdapter);
+                if(transactions.size() > 0) {
+                    binding.emptyState.setVisibility(View.GONE);
+                } else {
+                    binding.emptyState.setVisibility(View.VISIBLE);
+                }
+
             }
         });
 

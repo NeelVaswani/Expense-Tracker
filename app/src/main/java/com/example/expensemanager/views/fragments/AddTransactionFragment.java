@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -145,26 +146,28 @@ public class AddTransactionFragment extends BottomSheetDialogFragment {
         });
 
         binding.saveTransaction.setOnClickListener(c1-> {
-            double amount =  Double.parseDouble(binding.amount.getText().toString());
+
             String note = binding.note.getText().toString();
-            if (transaction.getType() == null)
-            {
-                transaction.setType(Constants.INCOME);
+            if (transaction.getType() != null && transaction.getDate() != null && transaction.getCategory() != null && transaction.getAccount() != null && !binding.amount.getText().toString().isEmpty() ) {
+                double amount =  Double.parseDouble(binding.amount.getText().toString());
+                if (transaction.getType().equals(Constants.EXPENSE)) {
+                    transaction.setAmount(amount * -1);
+                } else {
+                    transaction.setAmount(amount);
+                }
+                transaction.setNote(note);
+
+                ((MainActivity)getActivity()).viewModel.addTransaction(transaction);
+                ((MainActivity)getActivity()).getTransactions();
+                dismiss();
+
+
             }
-            if (transaction.getType().equals(Constants.EXPENSE))
-            {
-                transaction.setAmount(amount * -1);
-            }
-            else
-            {
-                transaction.setAmount(amount);
+            else {
+                binding.saveTransaction.setError("Please fill all the fields");
+                Toast.makeText(getContext(), "Please fill all the fields", Toast.LENGTH_SHORT).show();
             }
 
-            transaction.setNote(note);
-
-            ((MainActivity)getActivity()).viewModel.addTransaction(transaction);
-            ((MainActivity)getActivity()).getTransactions();
-            dismiss();
 
         });
 

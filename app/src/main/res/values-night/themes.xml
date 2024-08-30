@@ -6,6 +6,7 @@
         <!-- Customize your dark theme here. -->
         <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
     <style name="App.CustomIndicator" parent="Widget.Material3.BottomNavigationView.ActiveIndicator">
+        <item name="colorPrimary">#673AB7</item>
 
     </style>
 </resources>

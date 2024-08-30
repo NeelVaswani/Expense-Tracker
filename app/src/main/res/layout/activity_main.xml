@@ -36,13 +36,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="#673AB7"
-        app:itemActiveIndicatorStyle="@style/App.CustomIndicator"
         app:itemIconTint="@color/white"
         app:itemTextColor="#FAF9F9"
         app:labelVisibilityMode="labeled"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:menu="@menu/bottom_menu" />
+        app:menu="@menu/bottom_menu"
+        app:itemActiveIndicatorStyle="@style/App.CustomIndicator"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -2,7 +2,8 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="orangeDark">#CC2115</color>
+    <color name="orangeDark">#4C2A8A</color>
+    <color name="purple">#673AB7</color>
 
     <color name="orange">#F44336</color>
     <color name="textColor">#353535</color>

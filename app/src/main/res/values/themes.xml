@@ -10,6 +10,7 @@
     <style name="Theme.ExpenseTracker" parent="Base.Theme.ExpenseTracker" />
 
     <style name="App.CustomIndicator" parent="Widget.Material3.BottomNavigationView.ActiveIndicator">
+        <item name="android:color">@color/orangeDark</item>
 
     </style>
 </resources>
